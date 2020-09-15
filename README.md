@@ -1,43 +1,15 @@
 # Weather App
 
-## Step 0
-
-```bash
-npx create-react-app react-weather-app
-cd react-weather-app
-```
-
-## Step 1 - src/index.js
-
-installer et importer bootstrap5
-
-```bash
-yarn add bootstrap@next
-```
-
-```javascript
-// src/index.js
-
-import React from "react"
-import ReactDOM from "react-dom"
-import "bootstrap/dist/css/bootstrap.css"
-import App from "./App"
-// ... rien ne change ensuite
-```
-
-## public et public/index.html
-
-Personnaliser (title, langue, meta, icons, manifest....)
-
 ## Components folder
 
-Nous allons placer tous les components dans un nouveau dossier `components`. Voici la structure que nous allons créer :
+Voici la structure du projet, nous allons ajouter d'autre components dans `Weather`
 
 ```bash
 src
 ├── App.css
 ├── App.js
 ├── components
+│   ├── CityForm.js
 │   └── Weather
 │       └── index.js
 ├── index.css
@@ -55,6 +27,7 @@ Pour l'instant nous allons afficher des conditions météo pour Paris. Mais dans
 /* src/App.js */
 import React, { useState } from "react"
 import Weather from "./components/Weather"
+import CityForm from "./components/CityForm"
 
 function App() {
   const [city, setCity] = useState("Paris")
@@ -62,6 +35,7 @@ function App() {
     <div className="container my-4">
       <h1 className="display-3 text-center mb-4">Météo Actuelle</h1>
       <Weather city={city} />
+      <CityForm />
     </div>
   )
 }
@@ -75,17 +49,13 @@ export default App
 
 ```javascript
 import React, { useState, useEffect } from "react"
-const APP_KEY = "..."
+const API_KEY = "..."
 
 const Weather = ({ city }) => {
-  const [conditions, setConditions] = useState({})
-  const [description, setDescription] = useState("")
-  const [iconID, setIconID] = useState("")
-  const [location, setLocation] = useState("")
-
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APP_KEY}&units=metric&&lang=fr`
-    fetch(query)
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
+
+    fetch(url)
       .then((response) => {
         if (response.ok) {
           return response.json()
@@ -102,7 +72,7 @@ const Weather = ({ city }) => {
 
   return (
     <section className="text-center">
-      <h2 className="mb-4">Conditions météo à Paris</h2>
+      <h2 className="mb-4">Conditions météo à {city}</h2>
     </section>
   )
 }
@@ -130,6 +100,8 @@ Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 
 Ce n'est pas une bonne idée de laisser les clés API dans le fichier que nous partageons via github. Les variables globales, les clés sont souvent gardées dans un fichier `.env` dans la racine du projet (`.env` est inclue dans `.gitignore`)
 
+Attention le nom de la variable [doit commencer par REACT_APP](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+
 ```bash
 touch .env
 ```
@@ -143,7 +115,7 @@ Ensuite, dans `Weather.js` nous allons avoir accès à notre key en tant qu `pro
 
 ## Step 6 Décomposer Weather en plus de composants
 
-Voici la structure des fichiers
+Voici la nouvelle structure des fichiers
 
 ```bash
 src
@@ -180,10 +152,10 @@ const Weather = ({ city }) => {
   const [description, setDescription] = useState("")
   const [iconID, setIconID] = useState("")
   const [location, setLocation] = useState("")
-
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APP_KEY}&units=metric&&lang=fr`
-    fetch(query)
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APP_KEY}&units=metric&&lang=fr`
+
+    fetch(url)
       .then((response) => {
         if (response.ok) {
           return response.json()
@@ -207,17 +179,15 @@ const Weather = ({ city }) => {
       })
   }, [city])
   return (
-    <>
-      {!!location && (
-        <section className="text-center">
-          <Icon iconID={iconID} />
-          <h2 className="mb-4">Conditions météo à {location}</h2>
-          <Description description={description} />
-          <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
-          <Humidity humidity={humidity} />
-        </section>
-      )}
-    </>
+    !!location && (
+      <section className="text-center">
+        <Icon iconID={iconID} />
+        <h2 className="mb-4">Conditions météo à {location}</h2>
+        <Description description={description} />
+        <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
+        <Humidity humidity={humidity} />
+      </section>
+    )
   )
 }
 
@@ -321,8 +291,76 @@ avec
 }
 ```
 
+## CityForm Component
+
+```javascript
+import React from "react"
+
+const CityForm = ({ setCity }) => {
+  const submitHandler = (e) => {
+    e.preventDefault()
+    setCity(e.target.elements.city.value)
+    e.target.reset()
+  }
+  return (
+    <form onSubmit={submitHandler}>
+      <div className="input-group mb-2">
+        <label className="input-group-text" htmlFor="city">
+          Choisissez une ville
+        </label>
+        <input className="form-control" id="city" required />
+      </div>
+    </form>
+  )
+}
+
+export default CityForm
+```
+
 ## useWeather custom hook
 
-## Step 8 CityForm Component
+```javascript
+import { useState, useEffect } from "react"
+const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
 
-A vous de jouer !
+const useWeather = (city) => {
+  const [conditions, setConditions] = useState({})
+  const [description, setDescription] = useState("")
+  const [iconID, setIconID] = useState("")
+  const [location, setLocation] = useState("")
+
+  useEffect(() => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
+    fetch(url)
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        console.log(response)
+        throw new Error("météo untrouvable")
+      })
+      .then((data) => {
+        setLocation(`${data.name}, ${data.sys.country}`)
+        setConditions({
+          feelsLike: Math.round(data.main.feels_like),
+          mainTemp: Math.round(data.main.temp),
+          humidity: data.main.humidity,
+        })
+        setDescription(data.weather[0].description)
+        setIconID(data.weather[0].icon)
+      })
+      .catch((error) => {
+        setLocation("")
+        alert(error.message)
+      })
+  }, [city])
+  return {
+    conditions,
+    description,
+    iconID,
+    location,
+  }
+}
+
+export default useWeather
+```

@@ -1,13 +1,8 @@
 import React from "react"
 
-const CityForm = ({ setCity }) => {
-  const submitHandler = (e) => {
-    e.preventDefault()
-    setCity(e.target.elements.city.value)
-    e.target.reset()
-  }
+const CityForm = () => {
   return (
-    <form onSubmit={submitHandler}>
+    <form>
       <div className="input-group mb-2">
         <label className="input-group-text" htmlFor="city">
           Choisissez une ville
