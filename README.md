@@ -2,7 +2,7 @@
 
 ## Components folder
 
-Voici la structure du projet, nous allons ajouter d'autre components dans `Weather`
+Voici la structure du projet. Un peu plus tard, nous allons ajouter d'autres components dans `Weather`.
 
 ```bash
 src
@@ -47,8 +47,37 @@ export default App
 
 ## Weather component
 
+Voici notre component `Weather` de départ
+
 ```javascript
-import React, { useState, useEffect } from "react"
+// src/components/Weather.js
+import React from "react"
+
+const Weather = ({ city }) => {
+  return (
+    <section className="text-center mb-5">
+      <h2 className="mb-4">Conditions météo à {city}</h2>
+    </section>
+  )
+}
+
+export default Weather
+```
+
+Nous allons utiliser `useEffect` afin de "fetch" les données concernant la météo actuelle dans notre `city` (initiallement Paris)
+
+Voici l'url que nous allons utiliser :
+
+```javascript
+const API_KEY = "votrekeyici"
+const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
+```
+
+Nous mettons dans notre component :
+
+```javascript
+// src/components/Weather.js
+import React, { useEffect } from "react"
 const API_KEY = "..."
 
 const Weather = ({ city }) => {
@@ -113,7 +142,7 @@ REACT_APP_OPENWEATHER_API_KEY= "votrekeyvientici"
 
 Ensuite, dans `Weather.js` nous allons avoir accès à notre key en tant qu `process.env.REACT_APP_OPENWEATHER_API_KEY`
 
-## Step 6 Décomposer Weather en plus de composants
+## Décomposer Weather en plus de composants
 
 Voici la nouvelle structure des fichiers
 
@@ -127,6 +156,7 @@ src
 │       ├── Humidity.js
 │       ├── Icon.js
 │       ├── Temperature.js
+│       ├── humidity.css # css pour Humidity
 │       └── index.js
 ├── index.css
 ├── index.js
@@ -152,6 +182,7 @@ const Weather = ({ city }) => {
   const [description, setDescription] = useState("")
   const [iconID, setIconID] = useState("")
   const [location, setLocation] = useState("")
+
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APP_KEY}&units=metric&&lang=fr`
 
@@ -160,7 +191,6 @@ const Weather = ({ city }) => {
         if (response.ok) {
           return response.json()
         }
-        console.log(response)
         throw new Error("météo untrouvable")
       })
       .then((data) => {
@@ -178,6 +208,7 @@ const Weather = ({ city }) => {
         alert(error.message)
       })
   }, [city])
+
   return (
     !!location && (
       <section className="text-center">
@@ -293,6 +324,8 @@ avec
 
 ## CityForm Component
 
+Nous allons maintenant mettre à jour city, suite à event "submit" de notre formulaire.
+
 ```javascript
 import React from "react"
 
@@ -317,9 +350,17 @@ const CityForm = ({ setCity }) => {
 export default CityForm
 ```
 
-## useWeather custom hook
+## (optionel) useWeather custom hook
+
+Nous pouvons bouger la fonctionnalité de fetch dans sa propre fonction (custom hook).
+
+```bash
+mkdir src/hooks
+touch src/hooks/useWeather.js
+```
 
 ```javascript
+// src/hooks/useWeather.js
 import { useState, useEffect } from "react"
 const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
 
@@ -331,12 +372,12 @@ const useWeather = (city) => {
 
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
+
     fetch(url)
       .then((response) => {
         if (response.ok) {
           return response.json()
         }
-        console.log(response)
         throw new Error("météo untrouvable")
       })
       .then((data) => {
@@ -363,4 +404,34 @@ const useWeather = (city) => {
 }
 
 export default useWeather
+```
+
+et finalement dans `Weather`
+
+```javascript
+// src/components/Weather/index.js
+import React, { useState, useEffect } from "react"
+import Icon from "./Icon"
+import Description from "./Description"
+import Temperature from "./Temperature"
+import Humidity from "./Humidity"
+import useWeather from "../hooks/useWeather"
+
+const Weather = ({ city }) => {
+  const { conditions, description, iconID, location } = useWeather(city)
+
+  return (
+    !!location && (
+      <section className="text-center">
+        <Icon iconID={iconID} />
+        <h2 className="mb-4">Conditions météo à {location}</h2>
+        <Description description={description} />
+        <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
+        <Humidity humidity={humidity} />
+      </section>
+    )
+  )
+}
+
+export default Weather
 ```
