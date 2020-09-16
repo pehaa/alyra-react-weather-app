@@ -125,23 +125,6 @@ Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 - ** icon : ** `data.weather[0].icon`
 - ** location : ** `data.name`, `data.sys.country`
 
-## .env
-
-Ce n'est pas une bonne idée de laisser les clés API dans le fichier que nous partageons via github. Les variables globales, les clés sont souvent gardées dans un fichier `.env` dans la racine du projet (`.env` est inclue dans `.gitignore`)
-
-Attention le nom de la variable [doit commencer par REACT_APP](https://create-react-app.dev/docs/adding-custom-environment-variables/)
-
-```bash
-touch .env
-```
-
-```
-# .env
-REACT_APP_OPENWEATHER_API_KEY= "votrekeyvientici"
-```
-
-Ensuite, dans `Weather.js` nous allons avoir accès à notre key en tant qu `process.env.REACT_APP_OPENWEATHER_API_KEY`
-
 ## Décomposer Weather en plus de composants
 
 Voici la nouvelle structure des fichiers
@@ -175,7 +158,7 @@ import Description from "./Description"
 import Temperature from "./Temperature"
 import Humidity from "./Humidity"
 
-const APP_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
+const API_KEY = ".."
 
 const Weather = ({ city }) => {
   const [conditions, setConditions] = useState({})
@@ -184,7 +167,7 @@ const Weather = ({ city }) => {
   const [location, setLocation] = useState("")
 
   useEffect(() => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APP_KEY}&units=metric&&lang=fr`
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
 
     fetch(url)
       .then((response) => {
@@ -362,13 +345,15 @@ touch src/hooks/useWeather.js
 ```javascript
 // src/hooks/useWeather.js
 import { useState, useEffect } from "react"
-const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
+const API_KEY = ".."
 
 const useWeather = (city) => {
   const [conditions, setConditions] = useState({})
   const [description, setDescription] = useState("")
   const [iconID, setIconID] = useState("")
   const [location, setLocation] = useState("")
+
+  const API_KEY = ".."
 
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
