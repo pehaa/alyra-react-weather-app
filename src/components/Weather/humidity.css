@@ -1,0 +1,15 @@
+.humidity {
+  color: #1565c0;
+  box-shadow: inset 0 0 0 1px white;
+  height: 1rem;
+  border: 1px solid;
+  border-radius: 0.25rem;
+  transition: 1s;
+  background-image: linear-gradient(
+    to right,
+    currentcolor 100%,
+    transparent 100%
+  );
+  background-size: 0% auto;
+  background-repeat: no-repeat;
+}
