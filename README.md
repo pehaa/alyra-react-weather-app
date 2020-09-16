@@ -441,8 +441,11 @@ const Weather = ({ city }) => {
         <Icon iconID={iconID} />
         <h2 className="mb-4">Conditions météo à {location}</h2>
         <Description description={description} />
-        <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
-        <Humidity humidity={humidity} />
+        <Temperature
+          mainTemp={conditions.mainTemp}
+          feelsLike={conditions.feelsLike}
+        />
+        <Humidity humidity={conditions.humidity} />
       </section>
     )
   )
