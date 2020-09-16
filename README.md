@@ -125,6 +125,33 @@ Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 - **icon :** `data.weather[0].icon`
 - **location :** `data.name`, `data.sys.country`
 
+## .env.local
+
+Ce n'est pas une bonne idée de laisser les clés API dans le fichier que nous partageons via github. Nous pouvons garder nos clés dans le fichier `.env.local` dans la racine du projet (`.env.local` est inclu dans `.gitignore`)
+
+```bash
+touch .env.local
+```
+
+Attention le nom de la variable [doit commencer par REACT_APP](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+
+```bash
+touch .env
+```
+
+```
+# .env
+REACT_APP_OPENWEATHER_API_KEY= votrekeyvientici
+```
+
+Ensuite, dans `Weather.js` nous allons avoir accès à notre key en tant qu `process.env.REACT_APP_OPENWEATHER_API_KEY`
+
+Plus de détails dans la documentation de [CRA](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+
+Afin de deployer l'app il faudra renseigner la variable `REACT_APP_OPENWEATHER_API_KEY`
+
+![](https://assets.codepen.io/4515922/netlify.png)
+
 ## Décomposer Weather en plus de composants
 
 Voici la nouvelle structure des fichiers
@@ -198,8 +225,11 @@ const Weather = ({ city }) => {
         <Icon iconID={iconID} />
         <h2 className="mb-4">Conditions météo à {location}</h2>
         <Description description={description} />
-        <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
-        <Humidity humidity={humidity} />
+        <Temperature
+          mainTemp={conditions.mainTemp}
+          feelsLike={conditions.feelsLike}
+        />
+        <Humidity humidity={conditions.humidity} />
       </section>
     )
   )
