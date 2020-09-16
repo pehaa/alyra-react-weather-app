@@ -164,7 +164,7 @@ src
 └── setupTests.js
 ```
 
-Notre compenent `Weather` devient
+Notre component `Weather` devient
 
 ```javascript
 // src/components/Weather/index.js
@@ -324,7 +324,7 @@ avec
 
 ## CityForm Component
 
-Nous allons maintenant mettre à jour city, suite à event "submit" de notre formulaire.
+Nous allons maintenant mettre à jour `city`, suite à event "submit" de notre formulaire.
 
 ```javascript
 import React from "react"
@@ -350,7 +350,7 @@ const CityForm = ({ setCity }) => {
 export default CityForm
 ```
 
-## (optionel) useWeather custom hook
+## (optionnel) useWeather custom hook
 
 Nous pouvons bouger la fonctionnalité de fetch dans sa propre fonction (custom hook).
 
