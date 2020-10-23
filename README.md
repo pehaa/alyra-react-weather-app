@@ -1,10 +1,10 @@
 # 🌤 Weather App
 
-Avant de commencer prener un moment pour [créer votre clé API sur OpenWeatherMap](https://home.openweathermap.org/api_keys) et clonez ce repo. [Voici ce que nous allons construire ensemble](https://alyra-weather-widget.netlify.app/)
+Avant de commencer prener un moment pour [créer votre clé API sur OpenWeatherMap](https://home.openweathermap.org/api_keys) et clonez ce repo. [Voici ce que nous allons construire ensemble.](https://alyra-weather-widget.netlify.app/)
 
 ## Components folder
 
-Voici la structure du projet. Un peu plus tard, nous allons ajouter d'autres components dans le repertoire `Weather`.
+Nous allons démarrer avec la structure du projet comme ci-dessous. Un peu plus tard, nous allons ajouter d'autres components dans le repertoire `Weather`.
 
 ```bash
 src
