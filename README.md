@@ -1,8 +1,10 @@
-# Weather App
+# 🌤 Weather App
+
+Avant de commencer prener un moment pour [créer votre clé API sur OpenWeatherMap](https://home.openweathermap.org/api_keys) et clonez ce repo. [Voici ce que nous allons construire ensemble](https://alyra-weather-widget.netlify.app/)
 
 ## Components folder
 
-Voici la structure du projet. Un peu plus tard, nous allons ajouter d'autres components dans `Weather`.
+Voici la structure du projet. Un peu plus tard, nous allons ajouter d'autres components dans le repertoire `Weather`.
 
 ```bash
 src
@@ -21,7 +23,7 @@ src
 
 ## App.js
 
-Pour l'instant nous allons afficher des conditions météo pour Paris. Mais dans la version finale, un formulaire permettra de choisir la destination. En prévision de cela, nous allons créer une state variable `city`
+Pour commencer nous allons afficher des conditions météo pour Paris. Dans la version finale, un formulaire permettra de choisir la destination. En prévision de cela, nous allons créer une state variable `city`
 
 ```javascript
 /* src/App.js */
@@ -83,7 +85,6 @@ const API_KEY = "..."
 const Weather = ({ city }) => {
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&&lang=fr`
-
     fetch(url)
       .then((response) => {
         if (response.ok) {
